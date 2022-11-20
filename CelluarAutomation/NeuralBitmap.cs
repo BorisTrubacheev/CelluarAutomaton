@@ -17,13 +17,14 @@ namespace CelluarAutomation
         {
             window = wind;
             neuralmap = new NeuralMap(Int32.Parse(window.sizeX.Text), Int32.Parse(window.SizeY.Text), double.Parse(window.Gn.Text),
-                double.Parse(window.Cp.Text), double.Parse(window.defValue.Text), double.Parse(window.maxValue.Text), double.Parse(window.minValue.Text), true, true);
+                double.Parse(window.Cp.Text), double.Parse(window.defValue.Text), double.Parse(window.maxValue.Text), double.Parse(window.minValue.Text), true, true, 
+                Int32.Parse(window.stepSize.Text));
             map = new Bitmap(neuralmap.sizeX, neuralmap.sizeY);
         }
 
-        public NeuralBitmap(int sizeX, int sizeY, double Gn, double Cp, double defaultvalue, double MaxVal, double MinVal, bool ActivateGraph, bool initRandom)
+        public NeuralBitmap(int sizeX, int sizeY, double Gn, double Cp, double defaultvalue, double MaxVal, double MinVal, bool ActivateGraph, bool initRandom, int stepSize)
         {
-            neuralmap = new NeuralMap(sizeX, sizeY, Gn, Cp, defaultvalue, MaxVal, MinVal, ActivateGraph, initRandom);
+            neuralmap = new NeuralMap(sizeX, sizeY, Gn, Cp, defaultvalue, MaxVal, MinVal, ActivateGraph, initRandom, stepSize);
 
             map = new Bitmap(sizeX, sizeY);
 

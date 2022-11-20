@@ -62,7 +62,7 @@ namespace CelluarAutomation
         {
             Btm.Source = BitmapToImageSource(bitmap.map);
             bitmap.Draw();
-            bitmap.neuralmap.NextStep();
+            bitmap.neuralmap.GetNextSteps(Int32.Parse(stepSize.Text));
         }
 
         BitmapImage BitmapToImageSource(Bitmap bitmap)

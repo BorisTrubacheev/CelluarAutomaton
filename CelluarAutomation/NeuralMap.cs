@@ -24,6 +24,7 @@ namespace CelluarAutomation
         public double[][] _LASTconfig;
 
         public int _CURtime;
+        public int stepSize;
         public bool ActivatePointsGraph;
         public Hashtable PastConfigs;
 
@@ -60,7 +61,7 @@ namespace CelluarAutomation
 
 
         public NeuralMap(int sizeX, int sizeY, double Gn, double Cp, double defaultvalue, double
-        MaxVal, double MinVal, bool ActivateGraph, bool initRandom)
+        MaxVal, double MinVal, bool ActivateGraph, bool initRandom, int stepSize)
         {
             this.sizeX = sizeX;
             this.sizeY = sizeY;
@@ -69,6 +70,7 @@ namespace CelluarAutomation
             defval = defaultvalue;
             this.MaxVal = MaxVal;
             this.MinVal = MinVal;
+            this.stepSize = stepSize;
             ActivatePointsGraph = ActivateGraph;
             this.initRandom = initRandom;
             r = 4 * Gn / 1000;
@@ -88,6 +90,14 @@ namespace CelluarAutomation
             {
                 PastConfigs = new Hashtable();
                 PastConfigs[_CURtime] = _CURconfig;
+            }
+        }
+
+        public void GetNextSteps(int stepsCount)
+        {
+            for(int i = 0; i < stepsCount; i++)
+            {
+                NextStep();
             }
         }
 
