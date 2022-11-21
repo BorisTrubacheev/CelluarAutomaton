@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -27,7 +26,7 @@ namespace CelluarAutomation
     /// </summary>
     public partial class MainWindow : Window
     {
-        NeuralBitmap bitmap;
+        NeuralMap map;
         private bool isStarted;
 
         public MainWindow()
@@ -37,10 +36,10 @@ namespace CelluarAutomation
             isStarted = false;
         }
 
-        private void Timer_Elapsed(object sender, ElapsedEventArgs e)
+        /*private void Timer_Elapsed(object sender, ElapsedEventArgs e)
         {
             NextLattice();
-        }
+        }*/
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -53,33 +52,19 @@ namespace CelluarAutomation
             }
             else
             {
-                NextLattice();
+                map.GetNextSteps(Int32.Parse(stepSize.Text));
                 AddPointToGraph();
             }
         }
 
-        public void NextLattice()
+        /*public void NextLattice()
         {
             Btm.Source = BitmapToImageSource(bitmap.map);
             bitmap.Draw();
             bitmap.neuralmap.GetNextSteps(Int32.Parse(stepSize.Text));
-        }
+        }*/
 
-        BitmapImage BitmapToImageSource(Bitmap bitmap)
-        {
-            using (MemoryStream memory = new MemoryStream())
-            {
-                bitmap.Save(memory, System.Drawing.Imaging.ImageFormat.Bmp);
-                memory.Position = 0;
-                BitmapImage bitmapimage = new BitmapImage();
-                bitmapimage.BeginInit();
-                bitmapimage.StreamSource = memory;
-                bitmapimage.CacheOption = BitmapCacheOption.OnLoad;
-                bitmapimage.EndInit();
 
-                return bitmapimage;
-            }
-        }
 
         public void InitializeGraph()
         {
@@ -98,14 +83,23 @@ namespace CelluarAutomation
 
         public void AddPointToGraph()
         {
-            graph.Series[0].Values.Add(new ObservablePoint(bitmap.neuralmap._CURtime, bitmap.neuralmap._CURconfig[0][0]));
+            graph.Series[0].Values.Add(new ObservablePoint(map.time, map.currentLattice[0][0]));
         }
 
         public void InitializeNeuralBitmap()
         {
-            bitmap = new NeuralBitmap(this);
+            map = new NeuralMap(Btm, Int32.Parse(sizeX.Text), Int32.Parse(SizeY.Text), double.Parse(Gn.Text),
+                double.Parse(Cp.Text), double.Parse(defValue.Text), double.Parse(maxValue.Text), double.Parse(minValue.Text), true, true,
+                Int32.Parse(stepSize.Text));
+            map.bitMapLattice.Draw(map.currentLattice);
+            /*bitmap = new SmartBitmap(this);
             bitmap.Draw();
-            Btm.Source = BitmapToImageSource(bitmap.map);
+            Btm.Source = BitmapToImageSource(bitmap.map);*/
+        }
+
+        public Image GetImageSource()
+        {
+            return Btm;
         }
     }
 }

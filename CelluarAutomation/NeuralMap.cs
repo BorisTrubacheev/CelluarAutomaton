@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace CelluarAutomation
 {
     class NeuralMap
     {
+        public SmartBitmap bitMapLattice;
+
         public int sizeX;
         public int sizeY;
 
@@ -20,13 +22,13 @@ namespace CelluarAutomation
         public bool initRandom;
         private double r; 
 
-        public double[][] _CURconfig;
-        public double[][] _LASTconfig;
+        public double[][] currentLattice;
+        public double[][] lastLattice;
 
-        public int _CURtime;
+        public int time;
         public int stepSize;
         public bool ActivatePointsGraph;
-        public Hashtable PastConfigs;
+        public Hashtable pastConfigs;
 
         Random rnd = new Random();
         public NeuralMap()
@@ -43,26 +45,27 @@ namespace CelluarAutomation
             r = 4 * Gn / 1000;
 
 
-            _CURconfig = new double[sizeX][];
+            currentLattice = new double[sizeX][];
             for (int i = 0; i < sizeX; i++)
-                _CURconfig[i] = new double[sizeY];
+                currentLattice[i] = new double[sizeY];
             for (int i = 0; i < sizeX; i++)
                 for (int j = 0; j < sizeY; j++)
-                    _CURconfig[i][j] = rnd.NextDouble();
-            _LASTconfig = _CURconfig;
-            _CURtime = 0;
+                    currentLattice[i][j] = rnd.NextDouble();
+            lastLattice = currentLattice;
+            time = 0;
             if (ActivatePointsGraph)
             {
-                PastConfigs = new Hashtable();
-                PastConfigs[_CURtime] = _CURconfig;
+                pastConfigs = new Hashtable();
+                pastConfigs[time] = currentLattice;
             }
         }
 
 
 
-        public NeuralMap(int sizeX, int sizeY, double Gn, double Cp, double defaultvalue, double
+        public NeuralMap(Image img, int sizeX, int sizeY, double Gn, double Cp, double defaultvalue, double
         MaxVal, double MinVal, bool ActivateGraph, bool initRandom, int stepSize)
         {
+            bitMapLattice = new SmartBitmap(img, sizeX, sizeY, MaxVal, MinVal, currentLattice);
             this.sizeX = sizeX;
             this.sizeY = sizeY;
             this.Gn = Gn;
@@ -74,22 +77,22 @@ namespace CelluarAutomation
             ActivatePointsGraph = ActivateGraph;
             this.initRandom = initRandom;
             r = 4 * Gn / 1000;
-            _CURconfig = new double[this.sizeX][];
+            currentLattice = new double[this.sizeX][];
             for (int i = 0; i < this.sizeX; i++)
-                _CURconfig[i] = new double[this.sizeY];
+                currentLattice[i] = new double[this.sizeY];
             Random rand = new Random();
             for (int i = 0; i < this.sizeX; i++)
                 for (int j = 0; j < this.sizeY; j++)
                     if (initRandom)
-                        _CURconfig[i][j] = Math.Round(rand.NextDouble(), 2);
-                    else _CURconfig[i][j] = defval;
+                        currentLattice[i][j] = Math.Round(rand.NextDouble(), 2);
+                    else currentLattice[i][j] = defval;
             
-            Copy(_CURconfig, ref _LASTconfig);
-            _CURtime = 0;
+            Copy(currentLattice, ref lastLattice);
+            time = 0;
             if (ActivatePointsGraph)
             {
-                PastConfigs = new Hashtable();
-                PastConfigs[_CURtime] = _CURconfig;
+                pastConfigs = new Hashtable();
+                pastConfigs[time] = currentLattice;
             }
         }
 
@@ -98,6 +101,7 @@ namespace CelluarAutomation
             for(int i = 0; i < stepsCount; i++)
             {
                 NextStep();
+                bitMapLattice.Draw(currentLattice);
             }
         }
 
@@ -107,16 +111,16 @@ namespace CelluarAutomation
             for (int i = 0; i < sizeX; i++)
                 for (int j = 0; j < sizeY; j++)
                 {
-                    double stepval = F(_LASTconfig[i][j]) + C(i, j, _LASTconfig[i][j]);
-                    if (_LASTconfig[i][j] <= 0.5)
+                    double stepval = F(lastLattice[i][j]) + C(i, j, lastLattice[i][j]);
+                    if (lastLattice[i][j] <= 0.5)
                     if (stepval > 1)
                         stepval = 1;
                     if (stepval < 0)
                         stepval = 0;
-                    _CURconfig[i][j] = stepval;
+                    currentLattice[i][j] = stepval;
                 }
-            _LASTconfig = _CURconfig;
-            _CURtime++;
+            lastLattice = currentLattice;
+            time++;
             if (ActivatePointsGraph)
             {
                 double[][] src = new double[sizeX][];
@@ -124,15 +128,15 @@ namespace CelluarAutomation
                     src[i] = new double[sizeY];
                 for (int i = 0; i < sizeX; i++)
                     for (int j = 0; j < sizeY; j++)
-                        src[i][j] = _CURconfig[i][j];
-                PastConfigs[_CURtime] = src;
+                        src[i][j] = currentLattice[i][j];
+                pastConfigs[time] = src;
             }
         }
 
         public void SetValue(int x, int y, double v)
         {
-            _CURconfig[x][y] = v;
-            _LASTconfig[x][y] = v;
+            currentLattice[x][y] = v;
+            lastLattice[x][y] = v;
         }
         private double C(int x, int y, double point)
         {
@@ -156,7 +160,7 @@ namespace CelluarAutomation
         {
             if ((x < 0) || (x >= sizeX) || (y < 0) || (y >= sizeY))
                 return 0;
-            return _LASTconfig[x][y];
+            return lastLattice[x][y];
         }
 
         private void Copy(double[][] src, ref double[][] res)
