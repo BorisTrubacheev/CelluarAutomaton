@@ -12,15 +12,14 @@ namespace CelluarAutomation
 {
     class SmartBitmap
     {
-        public Bitmap lattice;
-        public WindowImage image;
-        public double maxValInCell;
-        public double minValInCell;
+        private Bitmap lattice;
+        private WindowImage image;
+        private double maxValInCell;
+        private double minValInCell;
 
         public SmartBitmap(WindowImage img, int sizeX, int sizeY, double max, double min, double[][] latticeArray)
         {
             lattice = new Bitmap(sizeX, sizeY);
-            //Draw(latticeArray);
             image = img;
             image.Source = BitmapToImageSource(lattice);
             maxValInCell = max;

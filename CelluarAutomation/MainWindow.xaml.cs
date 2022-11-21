@@ -26,7 +26,7 @@ namespace CelluarAutomation
     /// </summary>
     public partial class MainWindow : Window
     {
-        NeuralMap map;
+        private NeuralMap map;
         private bool isStarted;
 
         public MainWindow()
@@ -83,15 +83,15 @@ namespace CelluarAutomation
 
         public void AddPointToGraph()
         {
-            graph.Series[0].Values.Add(new ObservablePoint(map.time, map.currentLattice[0][0]));
+            graph.Series[0].Values.Add(new ObservablePoint(map.Time, map.CurrentLattice[0][0]));
         }
 
-        public void InitializeNeuralBitmap()
+        private void InitializeNeuralBitmap()
         {
             map = new NeuralMap(Btm, Int32.Parse(sizeX.Text), Int32.Parse(SizeY.Text), double.Parse(Gn.Text),
                 double.Parse(Cp.Text), double.Parse(defValue.Text), double.Parse(maxValue.Text), double.Parse(minValue.Text), true, true,
                 Int32.Parse(stepSize.Text));
-            map.bitMapLattice.Draw(map.currentLattice);
+            map.BitMapLattice.Draw(map.CurrentLattice);
             /*bitmap = new SmartBitmap(this);
             bitmap.Draw();
             Btm.Source = BitmapToImageSource(bitmap.map);*/

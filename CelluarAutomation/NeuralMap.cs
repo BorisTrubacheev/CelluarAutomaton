@@ -10,27 +10,36 @@ namespace CelluarAutomation
 {
     class NeuralMap
     {
-        public SmartBitmap bitMapLattice;
+        #region fields
+        private SmartBitmap bitMapLattice;
 
-        public int sizeX;
-        public int sizeY;
+        private int sizeX;
+        private int sizeY;
 
-        public double defval;
-        public double Gn, Cp;
-        public double MaxVal;
-        public double MinVal;
-        public bool initRandom;
-        private double r; 
+        private double defval;
+        private double Gn, Cp;
+        private double MaxVal;
+        private double MinVal;
+        private bool initRandom;
+        private double r;
 
-        public double[][] currentLattice;
-        public double[][] lastLattice;
+        private double[][] currentLattice;
+        private double[][] lastLattice;
 
-        public int time;
-        public int stepSize;
-        public bool ActivatePointsGraph;
-        public Hashtable pastConfigs;
+        private int time;
+        private int stepSize;
+        private bool ActivatePointsGraph;
+        private Hashtable pastConfigs;
 
-        Random rnd = new Random();
+        private Random rnd = new Random();
+        #endregion
+
+        #region properties
+        public SmartBitmap BitMapLattice => bitMapLattice;
+        public double[][] CurrentLattice => currentLattice;
+        public int Time => time;
+        #endregion
+
         public NeuralMap()
         {
             sizeX = 512;
@@ -56,7 +65,7 @@ namespace CelluarAutomation
             if (ActivatePointsGraph)
             {
                 pastConfigs = new Hashtable();
-                pastConfigs[time] = currentLattice;
+                pastConfigs[time] = CurrentLattice;
             }
         }
 
@@ -65,7 +74,7 @@ namespace CelluarAutomation
         public NeuralMap(Image img, int sizeX, int sizeY, double Gn, double Cp, double defaultvalue, double
         MaxVal, double MinVal, bool ActivateGraph, bool initRandom, int stepSize)
         {
-            bitMapLattice = new SmartBitmap(img, sizeX, sizeY, MaxVal, MinVal, currentLattice);
+            bitMapLattice = new SmartBitmap(img, sizeX, sizeY, MaxVal, MinVal, CurrentLattice);
             this.sizeX = sizeX;
             this.sizeY = sizeY;
             this.Gn = Gn;
@@ -79,7 +88,7 @@ namespace CelluarAutomation
             r = 4 * Gn / 1000;
             currentLattice = new double[this.sizeX][];
             for (int i = 0; i < this.sizeX; i++)
-                currentLattice[i] = new double[this.sizeY];
+                CurrentLattice[i] = new double[this.sizeY];
             Random rand = new Random();
             for (int i = 0; i < this.sizeX; i++)
                 for (int j = 0; j < this.sizeY; j++)
@@ -92,7 +101,7 @@ namespace CelluarAutomation
             if (ActivatePointsGraph)
             {
                 pastConfigs = new Hashtable();
-                pastConfigs[time] = currentLattice;
+                pastConfigs[time] = CurrentLattice;
             }
         }
 
@@ -101,12 +110,12 @@ namespace CelluarAutomation
             for(int i = 0; i < stepsCount; i++)
             {
                 NextStep();
-                bitMapLattice.Draw(currentLattice);
+                bitMapLattice.Draw(CurrentLattice);
             }
         }
 
 
-        public void NextStep()
+        private void NextStep()
         {
             for (int i = 0; i < sizeX; i++)
                 for (int j = 0; j < sizeY; j++)
@@ -117,7 +126,7 @@ namespace CelluarAutomation
                         stepval = 1;
                     if (stepval < 0)
                         stepval = 0;
-                    currentLattice[i][j] = stepval;
+                    CurrentLattice[i][j] = stepval;
                 }
             lastLattice = currentLattice;
             time++;
@@ -133,7 +142,7 @@ namespace CelluarAutomation
             }
         }
 
-        public void SetValue(int x, int y, double v)
+        private void SetValue(int x, int y, double v)
         {
             currentLattice[x][y] = v;
             lastLattice[x][y] = v;
