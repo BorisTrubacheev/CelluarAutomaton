@@ -71,6 +71,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Chart.cs" />
+    <Compile Include="Charts.cs" />
     <Compile Include="NeuralMap.cs" />
     <Compile Include="SmartBitmap.cs" />
     <Compile Include="MainWindow.xaml.cs">

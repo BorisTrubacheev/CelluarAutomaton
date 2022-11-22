@@ -26,14 +26,6 @@ namespace CelluarAutomation
             minValInCell = min;
         }
 
-        /*public SmartBitmap(int sizeX, int sizeY, double Gn, double Cp, double defaultvalue, double MaxVal, double MinVal, bool ActivateGraph, bool initRandom, int stepSize)
-        {
-            neuralmap = new NeuralMap(sizeX, sizeY, Gn, Cp, defaultvalue, MaxVal, MinVal, ActivateGraph, initRandom, stepSize);
-
-            map = new Bitmap(sizeX, sizeY);
-
-        }*/
-
         public void Draw(double[][] lattticeArray)
         {
             for (int i = 0; i < lattice.Width; i++)

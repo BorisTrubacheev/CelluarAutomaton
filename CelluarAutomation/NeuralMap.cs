@@ -111,6 +111,7 @@ namespace CelluarAutomation
             {
                 NextStep();
                 bitMapLattice.Draw(CurrentLattice);
+                Charts.AddPointsToGraphics(time, currentLattice);
             }
         }
 
