@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows.Controls;
 
 namespace CelluarAutomation
@@ -12,6 +13,8 @@ namespace CelluarAutomation
     {
         #region fields
         private SmartBitmap bitMapLattice;
+        private Timer drawTimer;
+        private int stepsCount;
 
         private int sizeX;
         private int sizeY;
@@ -75,6 +78,10 @@ namespace CelluarAutomation
         MaxVal, double MinVal, bool ActivateGraph, bool initRandom, int stepSize)
         {
             bitMapLattice = new SmartBitmap(img, sizeX, sizeY, MaxVal, MinVal, CurrentLattice);
+
+            drawTimer = new Timer(1000);
+            drawTimer.Elapsed += DrawTimerElapsed;
+
             this.sizeX = sizeX;
             this.sizeY = sizeY;
             this.Gn = Gn;
@@ -105,8 +112,18 @@ namespace CelluarAutomation
             }
         }
 
-        public void GetNextSteps(int stepsCount)
+        private void DrawTimerElapsed(object sender, ElapsedEventArgs e)
         {
+            GetNextSteps(--stepsCount);
+        }
+
+        public void GetNextSteps(int count)
+        {
+            stepsCount = count;
+            NextStep();
+            bitMapLattice.Draw(CurrentLattice);
+            Charts.AddPointsToGraphics(time, currentLattice);
+            /*drawTimer.Start();*/
             for(int i = 0; i < stepsCount; i++)
             {
                 NextStep();

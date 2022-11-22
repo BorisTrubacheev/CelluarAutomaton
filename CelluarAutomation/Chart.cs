@@ -38,7 +38,7 @@ namespace CelluarAutomation
                     Fill = Brushes.Transparent,
                     PointGeometrySize = 2,
                     StrokeThickness = 1,
-                    Title = "Значение в точке"
+                    Title = $"Значение в ({MonitoredPointX}, {monitoredPointY}) "
                 }
             };
             chart.LegendLocation = LegendLocation.Right;

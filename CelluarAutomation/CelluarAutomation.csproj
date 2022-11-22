@@ -73,6 +73,7 @@
     </Compile>
     <Compile Include="Chart.cs" />
     <Compile Include="Charts.cs" />
+    <Compile Include="DefaultValues.cs" />
     <Compile Include="NeuralMap.cs" />
     <Compile Include="SmartBitmap.cs" />
     <Compile Include="MainWindow.xaml.cs">

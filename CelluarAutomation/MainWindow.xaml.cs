@@ -108,11 +108,11 @@ namespace CelluarAutomation
         {
             if (isCoponentsInitiazed)
             {
-                if (CheckMonitoredPointCoordsIsOK());
+                CheckAndAddPoint();
             }
         }
 
-        private bool CheckMonitoredPointCoordsIsOK()
+        private bool CheckAndAddPoint()
         {
             bool isXParsing = Int32.TryParse(monitoredPointX.Text, out int x);
             bool isYParsing = Int32.TryParse(monitoredPointY.Text, out int y);
@@ -121,6 +121,14 @@ namespace CelluarAutomation
             {
                 Charts.AddGraphicToGraphicsList(new Chart(x, y));
                 GraphicsStackPanel.Children.Add(Charts.Last.GetGraphic);
+
+                monitoredPointX.Text = "";
+                monitoredPointY.Text = "";
+
+                TextBlock textBlock = new TextBlock();
+                textBlock.Text = $"({x}, {y})";
+                textBlock.TextAlignment = TextAlignment.Center;
+                monitoredPoints.Children.Add(textBlock);
             }
             else
             {
@@ -135,6 +143,11 @@ namespace CelluarAutomation
             }
 
             return res;
+        }
+
+        private void RebootButtonClick(object sender, RoutedEventArgs e)
+        {
+            
         }
     }
 }
