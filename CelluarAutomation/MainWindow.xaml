@@ -116,30 +116,22 @@
                             <ColumnDefinition Width="*"></ColumnDefinition>
                             <ColumnDefinition Width="*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        <TextBox Text="0" Grid.Column="0"></TextBox>
-                        <TextBox Text="0" Grid.Column="1"></TextBox>
+                        <TextBox x:Name="monitoredPointX" Text=""  Grid.Column="0"></TextBox>
+                        <TextBox x:Name="monitoredPointY" Text="" Grid.Column="1"></TextBox>
                     </Grid>
-
+                    <Button x:Name="addPoint" Grid.ColumnSpan="2" Margin="0 7 0 0" Click="AddPointCoordinateToMonitoring">
+                        <Button.Content>
+                            <TextBlock x:Name="click" Text="Отслеживать значение точки на графике" TextWrapping="Wrap" TextAlignment="Center"></TextBlock>
+                        </Button.Content>
+                    </Button>
                 </StackPanel>
             </Grid>
         </TabItem>
 
         <TabItem Header="Графики">
             <Grid>
-                <lvc:CartesianChart LegendLocation="Right" Name="graph" MaxHeight="200px" MinHeight="100px" VerticalAlignment="Top">
-                    <lvc:CartesianChart.AxisX >
-                        <lvc:Axis Visibility="Visible">
-                            <lvc:Axis.Separator>
-                                <lvc:Separator Step="1" Visibility="Visible" IsEnabled="True"></lvc:Separator>
-                            </lvc:Axis.Separator>
-                        </lvc:Axis>
-                    </lvc:CartesianChart.AxisX>
-                    <lvc:CartesianChart.Series>
-                        <lvc:LineSeries PointGeometry="{x:Null}" Fill="Transparent"
-                            StrokeThickness="3" Title="Points" PointGeometrySize="3" Name="pointDetection"
-                            Values="{Binding SPoints}" />
-                    </lvc:CartesianChart.Series>
-                </lvc:CartesianChart>
+                <StackPanel x:Name="GraphicsStackPanel">
+                </StackPanel>
             </Grid>
         </TabItem>
     </TabControl>
