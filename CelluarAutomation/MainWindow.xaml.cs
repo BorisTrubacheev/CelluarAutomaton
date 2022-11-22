@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -19,6 +18,7 @@ using LiveCharts;
 using LiveCharts.Wpf;
 using LiveCharts.Defaults;
 using Brushes = System.Windows.Media.Brushes;
+using System.Windows.Controls.Primitives;
 
 namespace CelluarAutomation
 {
@@ -27,19 +27,53 @@ namespace CelluarAutomation
     /// </summary>
     public partial class MainWindow : Window
     {
-        NeuralBitmap bitmap;
+        private NeuralMap map;
         private bool isStarted;
+        private bool isCoponentsInitiazed;
 
         public MainWindow()
         {
+            isCoponentsInitiazed = false;
             InitializeComponent();
-            InitializeGraph();
+            isCoponentsInitiazed = true;
             isStarted = false;
         }
 
-        private void Timer_Elapsed(object sender, ElapsedEventArgs e)
+        public static T FindChild<T>(DependencyObject parent, string childName)
+            where T : DependencyObject
         {
-            NextLattice();
+            if (parent == null) return null;
+
+            T foundChild = null;
+
+            int childrenCount = VisualTreeHelper.GetChildrenCount(parent);
+            for (int i = 0; i < childrenCount; i++)
+            {
+                var child = VisualTreeHelper.GetChild(parent, i);
+                T childType = child as T;
+                if (childType == null)
+                {
+                    foundChild = FindChild<T>(child, childName);
+
+                    if (foundChild != null) break;
+                }
+                else if (!string.IsNullOrEmpty(childName))
+                {
+                    var frameworkElement = child as FrameworkElement;
+                    if (frameworkElement != null && frameworkElement.Name == childName)
+                    {
+                        foundChild = (T)child;
+                        break;
+                    }
+                }
+                else
+                {
+                    foundChild = (T)child;
+                    break;
+                }
+            }
+
+            return foundChild;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -53,59 +87,54 @@ namespace CelluarAutomation
             }
             else
             {
-                NextLattice();
-                AddPointToGraph();
+                map.GetNextSteps(Int32.Parse(stepSize.Text));
             }
         }
 
-        public void NextLattice()
+        private void InitializeNeuralBitmap()
         {
-            Btm.Source = BitmapToImageSource(bitmap.map);
-            bitmap.Draw();
-            bitmap.neuralmap.NextStep();
+            map = new NeuralMap(Btm, Int32.Parse(sizeX.Text), Int32.Parse(SizeY.Text), double.Parse(Gn.Text),
+                double.Parse(Cp.Text), double.Parse(defValue.Text), double.Parse(maxValue.Text), double.Parse(minValue.Text), true, true,
+                Int32.Parse(stepSize.Text));
+            map.BitMapLattice.Draw(map.CurrentLattice);
         }
 
-        BitmapImage BitmapToImageSource(Bitmap bitmap)
+        public Image GetImageSource()
         {
-            using (MemoryStream memory = new MemoryStream())
-            {
-                bitmap.Save(memory, System.Drawing.Imaging.ImageFormat.Bmp);
-                memory.Position = 0;
-                BitmapImage bitmapimage = new BitmapImage();
-                bitmapimage.BeginInit();
-                bitmapimage.StreamSource = memory;
-                bitmapimage.CacheOption = BitmapCacheOption.OnLoad;
-                bitmapimage.EndInit();
+            return Btm;
+        }
 
-                return bitmapimage;
+        private void AddPointCoordinateToMonitoring(object sender, RoutedEventArgs e)
+        {
+            if (isCoponentsInitiazed)
+            {
+                if (CheckMonitoredPointCoordsIsOK());
             }
         }
 
-        public void InitializeGraph()
+        private bool CheckMonitoredPointCoordsIsOK()
         {
-            graph.Series = new SeriesCollection
+            bool isXParsing = Int32.TryParse(monitoredPointX.Text, out int x);
+            bool isYParsing = Int32.TryParse(monitoredPointY.Text, out int y);
+            bool res = isXParsing && isYParsing;
+            if (res)
             {
-                new LineSeries
-                {
-                    Values = new ChartValues<ObservablePoint>{},
-                    Fill = Brushes.Transparent,
-                    PointGeometrySize = 1,
-                    StrokeThickness = 1,
-                    Title = "Значение в точке"
-                }
-            };
-        }
+                Charts.AddGraphicToGraphicsList(new Chart(x, y));
+                GraphicsStackPanel.Children.Add(Charts.Last.GetGraphic);
+            }
+            else
+            {
+                Popup pop = new Popup();
+                TextBlock textBlock = new TextBlock();
+                textBlock.Background = Brushes.OrangeRed;
+                textBlock.Text = "Неправильный формат ввода координат.";
+                pop.Child = textBlock;
+                pop.Placement = PlacementMode.Mouse;
+                pop.StaysOpen = false;
+                pop.IsOpen = true;
+            }
 
-        public void AddPointToGraph()
-        {
-            graph.Series[0].Values.Add(new ObservablePoint(bitmap.neuralmap._CURtime, bitmap.neuralmap._CURconfig[0][0]));
-        }
-
-        public void InitializeNeuralBitmap()
-        {
-            bitmap = new NeuralBitmap(this);
-            bitmap.Draw();
-            Btm.Source = BitmapToImageSource(bitmap.map);
+            return res;
         }
     }
 }
