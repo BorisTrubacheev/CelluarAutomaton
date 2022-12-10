@@ -9,7 +9,7 @@ using System.Windows.Controls;
 
 namespace CelluarAutomation
 {
-    class NeuralMap
+    class Lattice
     {
         #region fields
         private SmartBitmap bitMapLattice;
@@ -43,7 +43,7 @@ namespace CelluarAutomation
         public int Time => time;
         #endregion
 
-        public NeuralMap()
+        public Lattice()
         {
             sizeX = 512;
             sizeY = 512;
@@ -74,7 +74,7 @@ namespace CelluarAutomation
 
 
 
-        public NeuralMap(Image img, int sizeX, int sizeY, double Gn, double Cp, double defaultvalue, double
+        public Lattice(Image img, int sizeX, int sizeY, double Gn, double Cp, double defaultvalue, double
         MaxVal, double MinVal, bool ActivateGraph, bool initRandom, int stepSize)
         {
             bitMapLattice = new SmartBitmap(img, sizeX, sizeY, MaxVal, MinVal, CurrentLattice);
@@ -101,7 +101,8 @@ namespace CelluarAutomation
                 for (int j = 0; j < this.sizeY; j++)
                     if (initRandom)
                         currentLattice[i][j] = Math.Round(rand.NextDouble(), 2);
-                    else currentLattice[i][j] = defval;
+                    else 
+                        currentLattice[i][j] = defval;
             
             Copy(currentLattice, ref lastLattice);
             time = 0;
@@ -139,7 +140,7 @@ namespace CelluarAutomation
                 for (int j = 0; j < sizeY; j++)
                 {
                     double stepval = F(lastLattice[i][j]) + C(i, j, lastLattice[i][j]);
-                    if (lastLattice[i][j] <= 0.5)
+                    if (lastLattice[i][j] <= 0.5) //????
                     if (stepval > 1)
                         stepval = 1;
                     if (stepval < 0)

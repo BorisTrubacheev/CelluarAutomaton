@@ -27,7 +27,7 @@ namespace CelluarAutomation
     /// </summary>
     public partial class MainWindow : Window
     {
-        private NeuralMap map;
+        private Lattice map;
         private bool isStarted;
         private bool isCoponentsInitiazed;
 
@@ -35,6 +35,7 @@ namespace CelluarAutomation
         {
             isCoponentsInitiazed = false;
             InitializeComponent();
+            InitializeTextBoxes();
             isCoponentsInitiazed = true;
             isStarted = false;
         }
@@ -81,7 +82,7 @@ namespace CelluarAutomation
             Button btn = (Button)sender;
             if (!isStarted)
             {
-                InitializeNeuralBitmap();
+                InitializeLattice();
                 btn.Content = "Следующий шаг";
                 isStarted = true;
             }
@@ -91,10 +92,10 @@ namespace CelluarAutomation
             }
         }
 
-        private void InitializeNeuralBitmap()
+        private void InitializeLattice()
         {
-            map = new NeuralMap(Btm, Int32.Parse(sizeX.Text), Int32.Parse(SizeY.Text), double.Parse(Gn.Text),
-                double.Parse(Cp.Text), double.Parse(defValue.Text), double.Parse(maxValue.Text), double.Parse(minValue.Text), true, true,
+            map = new Lattice(Btm, Int32.Parse(sizeX.Text), Int32.Parse(sizeY.Text), double.Parse(Gn.Text),
+                double.Parse(Cp.Text), double.Parse(defValue.Text), double.Parse(maxValue.Text), double.Parse(minValue.Text), true, useRandomMode.IsChecked.Value,
                 Int32.Parse(stepSize.Text));
             map.BitMapLattice.Draw(map.CurrentLattice);
         }
@@ -145,9 +146,30 @@ namespace CelluarAutomation
             return res;
         }
 
+        private void InitializeTextBoxes()
+        {
+            sizeX.Text = DefaultValues.defaultSizeX.ToString();
+            sizeY.Text = DefaultValues.defaultSizeY.ToString();
+            Gn.Text = DefaultValues.defaultGn.ToString();
+            Cp.Text = DefaultValues.defaultCp.ToString();
+            defValue.Text = DefaultValues.defaultDefVulue.ToString();
+            maxValue.Text = DefaultValues.defaultMaxValue.ToString();
+            minValue.Text = DefaultValues.defaultMinValue.ToString();
+            stepSize.Text = DefaultValues.defaultStepSize.ToString();
+        }
+
         private void RebootButtonClick(object sender, RoutedEventArgs e)
         {
-            
+            InitializeTextBoxes();
+            InitializeLattice();
+            Charts.ClearChartsByRebootButton();
+            GraphicsStackPanel.Children.Clear();
+            ClearMonitoredPointsStackPanel();
+        }
+
+        private void ClearMonitoredPointsStackPanel()
+        {
+            monitoredPoints.Children.RemoveRange(3, monitoredPoints.Children.Count - 3);
         }
     }
 }

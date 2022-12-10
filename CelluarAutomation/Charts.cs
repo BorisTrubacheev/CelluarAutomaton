@@ -27,5 +27,10 @@ namespace CelluarAutomation
                 chrt.GetGraphic.Series[0].Values.Add(point);
             }
         }
+
+        public static void ClearChartsByRebootButton()
+        {
+            chartsList.Clear();
+        }
     }
 }
