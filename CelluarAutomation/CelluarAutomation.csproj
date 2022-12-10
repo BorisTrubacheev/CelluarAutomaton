@@ -71,8 +71,11 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="NeuralMap.cs" />
-    <Compile Include="NeuralBitmap.cs" />
+    <Compile Include="Chart.cs" />
+    <Compile Include="Charts.cs" />
+    <Compile Include="DefaultValues.cs" />
+    <Compile Include="Lattice.cs" />
+    <Compile Include="SmartBitmap.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
