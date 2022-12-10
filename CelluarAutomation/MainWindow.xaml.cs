@@ -161,7 +161,9 @@ namespace CelluarAutomation
         private void RebootButtonClick(object sender, RoutedEventArgs e)
         {
             InitializeTextBoxes();
-            InitializeLattice();
+            //InitializeLattice();
+            isStarted = false;
+            startButton.Content = "Старт";
             Charts.ClearChartsByRebootButton();
             GraphicsStackPanel.Children.Clear();
             ClearMonitoredPointsStackPanel();

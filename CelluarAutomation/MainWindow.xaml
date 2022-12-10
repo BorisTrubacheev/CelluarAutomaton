@@ -30,7 +30,7 @@
                             <RowDefinition Height="*"></RowDefinition>
                             <RowDefinition Height="*"></RowDefinition>
                         </Grid.RowDefinitions>
-                        <Button FontSize="22" Click="Button_Click" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.RowSpan="2" MinHeight="50px">
+                        <Button Name="startButton" FontSize="22" Click="Button_Click" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.RowSpan="2" MinHeight="50px">
                             <Button.Content>
                                 <TextBlock Text="Старт" TextWrapping="Wrap"></TextBlock>
                             </Button.Content>
