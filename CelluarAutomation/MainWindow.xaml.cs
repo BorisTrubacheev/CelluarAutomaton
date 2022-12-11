@@ -83,21 +83,39 @@ namespace CelluarAutomation
             if (!isStarted)
             {
                 InitializeLattice();
-                btn.Content = "Следующий шаг";
+                btn.Content = "Next step";
                 isStarted = true;
             }
             else
             {
                 map.GetNextSteps(Int32.Parse(stepSize.Text));
+                currentStepTextBlock.Text = "Current step: " + map.Time.ToString();
             }
         }
 
         private void InitializeLattice()
         {
-            map = new Lattice(Btm, Int32.Parse(sizeX.Text), Int32.Parse(sizeY.Text), double.Parse(Gn.Text),
-                double.Parse(Cp.Text), double.Parse(defValue.Text), double.Parse(maxValue.Text), double.Parse(minValue.Text), true, useRandomMode.IsChecked.Value,
-                Int32.Parse(stepSize.Text));
-            map.BitMapLattice.Draw(map.CurrentLattice);
+            try
+            {
+                map = new Lattice(Btm, Int32.Parse(sizeX.Text), Int32.Parse(sizeY.Text), double.Parse(Gn.Text),
+                    double.Parse(Cp.Text), double.Parse(defValue.Text), double.Parse(maxValue.Text), double.Parse(minValue.Text), true, useRandomMode.IsChecked.Value,
+                    Int32.Parse(stepSize.Text));
+                map.BitMapLattice.Draw(map.CurrentLattice);
+            }
+            catch
+            {
+                Popup pop = new Popup();
+                TextBlock textBlock = new TextBlock();
+                textBlock.Background = Brushes.OrangeRed;
+                textBlock.Text = "Check the correctness of the entered parameters";
+                pop.Child = textBlock;
+                pop.Placement = PlacementMode.Mouse;
+                pop.StaysOpen = false;
+                pop.IsOpen = true;
+
+                isStarted = false;
+                startButton.Content = "Start";
+            }
         }
 
         public Image GetImageSource()
@@ -120,8 +138,8 @@ namespace CelluarAutomation
             bool res = isXParsing && isYParsing;
             if (res)
             {
-                Charts.AddGraphicToGraphicsList(new Chart(x, y));
-                GraphicsStackPanel.Children.Add(Charts.Last.GetGraphic);
+                Charts.AddChartToChartsList(new Chart(x, y));
+                ChartsStackPanel.Children.Add(Charts.Last.GetChart);
 
                 monitoredPointX.Text = "";
                 monitoredPointY.Text = "";
@@ -136,7 +154,7 @@ namespace CelluarAutomation
                 Popup pop = new Popup();
                 TextBlock textBlock = new TextBlock();
                 textBlock.Background = Brushes.OrangeRed;
-                textBlock.Text = "Неправильный формат ввода координат.";
+                textBlock.Text = "Incorrect coordinate input format";
                 pop.Child = textBlock;
                 pop.Placement = PlacementMode.Mouse;
                 pop.StaysOpen = false;
@@ -161,11 +179,11 @@ namespace CelluarAutomation
         private void RebootButtonClick(object sender, RoutedEventArgs e)
         {
             InitializeTextBoxes();
-            //InitializeLattice();
             isStarted = false;
             startButton.Content = "Старт";
+            currentStepTextBlock.Text = "Current step: 0";
             Charts.ClearChartsByRebootButton();
-            GraphicsStackPanel.Children.Clear();
+            ChartsStackPanel.Children.Clear();
             ClearMonitoredPointsStackPanel();
         }
 

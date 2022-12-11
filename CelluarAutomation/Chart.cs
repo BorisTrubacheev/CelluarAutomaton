@@ -16,7 +16,7 @@ namespace CelluarAutomation
         private readonly int monitoredPointX;
         private readonly int monitoredPointY;
 
-        public CartesianChart GetGraphic => chart;
+        public CartesianChart GetChart => chart;
         public int MonitoredPointX => monitoredPointX;
         public int MonitoredPointY => monitoredPointY;
 
@@ -24,10 +24,10 @@ namespace CelluarAutomation
         {
             monitoredPointX = coordX;
             monitoredPointY = coordY;
-            InitializeGraph();
+            InitializeChart();
         }
 
-        private void InitializeGraph()
+        private void InitializeChart()
         {
             chart = new CartesianChart();
             chart.Series = new SeriesCollection
@@ -38,7 +38,7 @@ namespace CelluarAutomation
                     Fill = Brushes.Transparent,
                     PointGeometrySize = 2,
                     StrokeThickness = 1,
-                    Title = $"Значение в ({MonitoredPointX}, {monitoredPointY}) "
+                    Title = $"Value in ({MonitoredPointX}, {monitoredPointY}) "
                 }
             };
             chart.LegendLocation = LegendLocation.Right;

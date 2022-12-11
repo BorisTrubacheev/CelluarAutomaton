@@ -11,20 +11,20 @@ namespace CelluarAutomation
     {
         private static List<Chart> chartsList = new List<Chart>();
 
-        public static int GraphicsCount => chartsList.Count();
+        public static int ChartsCount => chartsList.Count();
         public static Chart Last => chartsList.Last();
 
-        public static void AddGraphicToGraphicsList(Chart graphic)
+        public static void AddChartToChartsList(Chart chart)
         {
-            chartsList.Add(graphic);
+            chartsList.Add(chart);
         }
 
-        public static void AddPointsToGraphics(int time, double[][] arr)
+        public static void AddPointsToCharts(int time, double[][] arr)
         {
             foreach (Chart chrt in chartsList)
             {
                 ObservablePoint point = new ObservablePoint(time, arr[chrt.MonitoredPointX][chrt.MonitoredPointY]);
-                chrt.GetGraphic.Series[0].Values.Add(point);
+                chrt.GetChart.Series[0].Values.Add(point);
             }
         }
 

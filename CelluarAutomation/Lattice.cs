@@ -20,11 +20,10 @@ namespace CelluarAutomation
         private int sizeY;
 
         private double defval;
-        private double Gn, Cp;
+        private double r, Cp;
         private double MaxVal;
         private double MinVal;
         private bool initRandom;
-        private double r;
 
         private double[][] currentLattice;
         private double[][] lastLattice;
@@ -43,38 +42,7 @@ namespace CelluarAutomation
         public int Time => time;
         #endregion
 
-        public Lattice()
-        {
-            sizeX = 512;
-            sizeY = 512;
-            Gn = 500;
-            Cp = 1;
-            MaxVal = 1;
-            MinVal = 0;
-            defval = 0.1;
-            initRandom = false;
-            ActivatePointsGraph = true;
-            r = 4 * Gn / 1000;
-
-
-            currentLattice = new double[sizeX][];
-            for (int i = 0; i < sizeX; i++)
-                currentLattice[i] = new double[sizeY];
-            for (int i = 0; i < sizeX; i++)
-                for (int j = 0; j < sizeY; j++)
-                    currentLattice[i][j] = rnd.NextDouble();
-            lastLattice = currentLattice;
-            time = 0;
-            if (ActivatePointsGraph)
-            {
-                pastConfigs = new Hashtable();
-                pastConfigs[time] = CurrentLattice;
-            }
-        }
-
-
-
-        public Lattice(Image img, int sizeX, int sizeY, double Gn, double Cp, double defaultvalue, double
+        public Lattice(Image img, int sizeX, int sizeY, double r, double Cp, double defaultvalue, double
         MaxVal, double MinVal, bool ActivateGraph, bool initRandom, int stepSize)
         {
             bitMapLattice = new SmartBitmap(img, sizeX, sizeY, MaxVal, MinVal, CurrentLattice);
@@ -84,7 +52,7 @@ namespace CelluarAutomation
 
             this.sizeX = sizeX;
             this.sizeY = sizeY;
-            this.Gn = Gn;
+            this.r = r;
             this.Cp = Cp;
             defval = defaultvalue;
             this.MaxVal = MaxVal;
@@ -92,7 +60,6 @@ namespace CelluarAutomation
             this.stepSize = stepSize;
             ActivatePointsGraph = ActivateGraph;
             this.initRandom = initRandom;
-            r = 4 * Gn / 1000;
             currentLattice = new double[this.sizeX][];
             for (int i = 0; i < this.sizeX; i++)
                 CurrentLattice[i] = new double[this.sizeY];
@@ -123,13 +90,13 @@ namespace CelluarAutomation
             stepsCount = count;
             NextStep();
             bitMapLattice.Draw(CurrentLattice);
-            Charts.AddPointsToGraphics(time, currentLattice);
+            Charts.AddPointsToCharts(time, currentLattice);
             /*drawTimer.Start();*/
-            for(int i = 0; i < stepsCount; i++)
+            for(int i = 0; i < stepsCount - 1; i++)
             {
                 NextStep();
                 bitMapLattice.Draw(CurrentLattice);
-                Charts.AddPointsToGraphics(time, currentLattice);
+                Charts.AddPointsToCharts(time, currentLattice);
             }
         }
 

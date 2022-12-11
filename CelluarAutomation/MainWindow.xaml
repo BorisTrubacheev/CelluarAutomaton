@@ -6,10 +6,10 @@
         xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         xmlns:local="clr-namespace:CelluarAutomation"
         mc:Ignorable="d"
-        Title="Клеточный автомат" Height="450" Width="850" MinWidth="850" MinHeight="250">
+        Title="Cellular automaton" Height="450" Width="850" MinWidth="850" MinHeight="250">
 
     <TabControl>
-        <TabItem Header="Решётка">
+        <TabItem Header="Lattice">
             <Grid Background="AliceBlue">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="9*"/>
@@ -30,9 +30,10 @@
                             <RowDefinition Height="*"></RowDefinition>
                             <RowDefinition Height="*"></RowDefinition>
                         </Grid.RowDefinitions>
-                        <Button Name="startButton" FontSize="22" Click="Button_Click" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.RowSpan="2" MinHeight="50px">
+                        <Button Name="startButton" FontSize="22" Click="Button_Click" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.RowSpan="2" MinHeight="50px"
+                                MinWidth="75px">
                             <Button.Content>
-                                <TextBlock Text="Старт" TextWrapping="Wrap"></TextBlock>
+                                <TextBlock Text="Start" TextWrapping="Wrap"></TextBlock>
                             </Button.Content>
                         </Button>
                     </Grid>
@@ -61,7 +62,7 @@
                             <RowDefinition Height="*"></RowDefinition>
                         </Grid.RowDefinitions>
                         <TextBox x:Name="Gn" MinWidth="50 px" Text="1000" Grid.Row="0" TextAlignment="Right" FlowDirection="LeftToRight"/>
-                        <TextBlock Text="Gn" TextAlignment="Center" TextWrapping="Wrap" Grid.Row="1" Margin="0"></TextBlock>
+                        <TextBlock Text="r" TextAlignment="Center" TextWrapping="Wrap" Grid.Row="1" Margin="0"></TextBlock>
                     </Grid>
 
                     <Grid>
@@ -121,35 +122,39 @@
                 </Border>
 
                 <Border Width="Auto" BorderThickness="0.5px" BorderBrush="Black" Grid.ColumnSpan="2">
-                <StackPanel x:Name="monitoredPoints" Orientation="Vertical" Grid.ColumnSpan="2">
-                    <Grid ShowGridLines="True">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"></ColumnDefinition>
-                            <ColumnDefinition Width="*"></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-                        <TextBox x:Name="monitoredPointX" Text=""  Grid.Column="0"></TextBox>
-                        <TextBox x:Name="monitoredPointY" Text="" Grid.Column="1"></TextBox>
-                    </Grid>
-                    <Button x:Name="addPoint" Grid.ColumnSpan="2" Margin="0 7 0 0" Click="AddPointCoordinateToMonitoring">
-                        <Button.Content>
-                            <TextBlock x:Name="click" Text="Отслеживать значение точки на графике" TextWrapping="Wrap" TextAlignment="Center"></TextBlock>
-                        </Button.Content>
-                    </Button>
-                    <TextBlock Text="Отслеживаемые точки" TextWrapping="Wrap" TextAlignment="Center"></TextBlock>
-                </StackPanel>
+                    <StackPanel x:Name="monitoredPoints" Orientation="Vertical" Grid.ColumnSpan="2">
+                        <Grid ShowGridLines="True">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="monitoredPointX" Text=""  Grid.Column="0"></TextBox>
+                            <TextBox x:Name="monitoredPointY" Text="" Grid.Column="1"></TextBox>
+                        </Grid>
+                        <Button x:Name="addPoint" Grid.ColumnSpan="2" Margin="0 7 0 0" Click="AddPointCoordinateToMonitoring">
+                            <Button.Content>
+                                <TextBlock x:Name="click" Text="Track the value of a point on a chart" TextWrapping="Wrap" TextAlignment="Center"></TextBlock>
+                            </Button.Content>
+                        </Button>
+                        <TextBlock Text="Tracked points" TextWrapping="Wrap" TextAlignment="Center"></TextBlock>
+                    </StackPanel>
                 </Border>
+
+                <Grid Grid.ColumnSpan="2" Grid.Row="0" VerticalAlignment="Bottom">
+                    <TextBlock x:Name="currentStepTextBlock"></TextBlock>
+                </Grid>
 
                 <Grid Grid.ColumnSpan="2" Grid.Row="1">
                     <Button Click="RebootButtonClick">
-                        <TextBlock Text="Перезапуск" TextWrapping="Wrap" TextAlignment="Center"></TextBlock>
+                        <TextBlock Text="Restart" TextWrapping="Wrap" TextAlignment="Center"></TextBlock>
                     </Button>
                 </Grid>
             </Grid>
         </TabItem>
 
-        <TabItem Header="Графики">
+        <TabItem Header="Charts">
             <Grid>
-                <StackPanel x:Name="GraphicsStackPanel">
+                <StackPanel x:Name="ChartsStackPanel">
                 </StackPanel>
             </Grid>
         </TabItem>
