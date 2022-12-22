@@ -106,13 +106,11 @@ namespace CelluarAutomation
             for (int i = 0; i < sizeX; i++)
                 for (int j = 0; j < sizeY; j++)
                 {
-                    double stepval = F(lastLattice[i][j]) + C(i, j, lastLattice[i][j]);
-                    if (lastLattice[i][j] <= 0.5) //????
-                    if (stepval > 1)
-                        stepval = 1;
-                    if (stepval < 0)
-                        stepval = 0;
-                    CurrentLattice[i][j] = stepval;
+                    double value = F(lastLattice[i][j]) + C(i, j, lastLattice[i][j]);
+                    if (value > 1) value = 1;
+                    if (value < 0) value = 0;
+
+                    CurrentLattice[i][j] = value;
                 }
             lastLattice = currentLattice;
             time++;

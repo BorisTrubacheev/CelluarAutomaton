@@ -180,7 +180,7 @@ namespace CelluarAutomation
         {
             InitializeTextBoxes();
             isStarted = false;
-            startButton.Content = "Старт";
+            startButton.Content = "Start";
             currentStepTextBlock.Text = "Current step: 0";
             Charts.ClearChartsByRebootButton();
             ChartsStackPanel.Children.Clear();
