@@ -40,44 +40,8 @@ namespace CelluarAutomation
             isStarted = false;
         }
 
-        public static T FindChild<T>(DependencyObject parent, string childName)
-            where T : DependencyObject
-        {
-            if (parent == null) return null;
-
-            T foundChild = null;
-
-            int childrenCount = VisualTreeHelper.GetChildrenCount(parent);
-            for (int i = 0; i < childrenCount; i++)
-            {
-                var child = VisualTreeHelper.GetChild(parent, i);
-                T childType = child as T;
-                if (childType == null)
-                {
-                    foundChild = FindChild<T>(child, childName);
-
-                    if (foundChild != null) break;
-                }
-                else if (!string.IsNullOrEmpty(childName))
-                {
-                    var frameworkElement = child as FrameworkElement;
-                    if (frameworkElement != null && frameworkElement.Name == childName)
-                    {
-                        foundChild = (T)child;
-                        break;
-                    }
-                }
-                else
-                {
-                    foundChild = (T)child;
-                    break;
-                }
-            }
-
-            return foundChild;
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
+        #region buttons click
+        private void NextStepButtonClick(object sender, RoutedEventArgs e)
         {
             Button btn = (Button)sender;
             if (!isStarted)
@@ -93,12 +57,33 @@ namespace CelluarAutomation
             }
         }
 
+        private void RebootButtonClick(object sender, RoutedEventArgs e)
+        {
+            InitializeTextBoxes();
+            isStarted = false;
+            startButton.Content = "Start";
+            currentStepTextBlock.Text = "Current step: 0";
+            Charts.ClearChartsByRebootButton();
+            ChartsStackPanel.Children.Clear();
+            ClearMonitoredPointsStackPanel();
+        }
+
+        private void AddPointToChartButtonClick(object sender, RoutedEventArgs e)
+        {
+            if (isCoponentsInitiazed)
+            {
+                CheckAndAddPoint();
+            }
+        }
+        #endregion
+
+        #region methods
         private void InitializeLattice()
         {
             try
             {
                 map = new Lattice(Btm, Int32.Parse(sizeX.Text), Int32.Parse(sizeY.Text), double.Parse(Gn.Text),
-                    double.Parse(Cp.Text), double.Parse(defValue.Text), double.Parse(maxValue.Text), double.Parse(minValue.Text), true, useRandomMode.IsChecked.Value,
+                    double.Parse(Cp.Text), double.Parse(defValue.Text), double.Parse(maxValue.Text), double.Parse(minValue.Text), useRandomMode.IsChecked.Value,
                     Int32.Parse(stepSize.Text));
                 map.BitMapLattice.Draw(map.CurrentLattice);
             }
@@ -121,14 +106,6 @@ namespace CelluarAutomation
         public Image GetImageSource()
         {
             return Btm;
-        }
-
-        private void AddPointCoordinateToMonitoring(object sender, RoutedEventArgs e)
-        {
-            if (isCoponentsInitiazed)
-            {
-                CheckAndAddPoint();
-            }
         }
 
         private bool CheckAndAddPoint()
@@ -176,20 +153,10 @@ namespace CelluarAutomation
             stepSize.Text = DefaultValues.defaultStepSize.ToString();
         }
 
-        private void RebootButtonClick(object sender, RoutedEventArgs e)
-        {
-            InitializeTextBoxes();
-            isStarted = false;
-            startButton.Content = "Start";
-            currentStepTextBlock.Text = "Current step: 0";
-            Charts.ClearChartsByRebootButton();
-            ChartsStackPanel.Children.Clear();
-            ClearMonitoredPointsStackPanel();
-        }
-
         private void ClearMonitoredPointsStackPanel()
         {
             monitoredPoints.Children.RemoveRange(3, monitoredPoints.Children.Count - 3);
         }
+        #endregion
     }
 }
