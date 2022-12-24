@@ -30,7 +30,7 @@
                             <RowDefinition Height="*"></RowDefinition>
                             <RowDefinition Height="*"></RowDefinition>
                         </Grid.RowDefinitions>
-                        <Button Name="startButton" FontSize="22" Click="Button_Click" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.RowSpan="2" MinHeight="50px"
+                        <Button Name="startButton" FontSize="22" Click="NextStepButtonClick" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.RowSpan="2" MinHeight="50px"
                                 MinWidth="75px">
                             <Button.Content>
                                 <TextBlock Text="Start" TextWrapping="Wrap"></TextBlock>
@@ -131,7 +131,7 @@
                             <TextBox x:Name="monitoredPointX" Text=""  Grid.Column="0"></TextBox>
                             <TextBox x:Name="monitoredPointY" Text="" Grid.Column="1"></TextBox>
                         </Grid>
-                        <Button x:Name="addPoint" Grid.ColumnSpan="2" Margin="0 7 0 0" Click="AddPointCoordinateToMonitoring">
+                        <Button x:Name="addPoint" Grid.ColumnSpan="2" Margin="0 7 0 0" Click="AddPointToChartButtonClick">
                             <Button.Content>
                                 <TextBlock x:Name="click" Text="Track the value of a point on a chart" TextWrapping="Wrap" TextAlignment="Center"></TextBlock>
                             </Button.Content>

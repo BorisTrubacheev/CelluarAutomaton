@@ -13,7 +13,6 @@ namespace CelluarAutomation
     {
         #region fields
         private SmartBitmap bitMapLattice;
-        private Timer drawTimer;
         private int stepsCount;
 
         private int sizeX;
@@ -21,17 +20,11 @@ namespace CelluarAutomation
 
         private double defval;
         private double r, Cp;
-        private double MaxVal;
-        private double MinVal;
-        private bool initRandom;
 
         private double[][] currentLattice;
         private double[][] lastLattice;
 
         private int time;
-        private int stepSize;
-        private bool ActivatePointsGraph;
-        private Hashtable pastConfigs;
 
         private Random rnd = new Random();
         #endregion
@@ -42,48 +35,47 @@ namespace CelluarAutomation
         public int Time => time;
         #endregion
 
+        #region constructor
         public Lattice(Image img, int sizeX, int sizeY, double r, double Cp, double defaultvalue, double
-        MaxVal, double MinVal, bool ActivateGraph, bool initRandom, int stepSize)
+        MaxVal, double MinVal, bool initRandom, int stepSize)
         {
             bitMapLattice = new SmartBitmap(img, sizeX, sizeY, MaxVal, MinVal, CurrentLattice);
-
-            drawTimer = new Timer(1000);
-            drawTimer.Elapsed += DrawTimerElapsed;
 
             this.sizeX = sizeX;
             this.sizeY = sizeY;
             this.r = r;
             this.Cp = Cp;
             defval = defaultvalue;
-            this.MaxVal = MaxVal;
-            this.MinVal = MinVal;
-            this.stepSize = stepSize;
-            ActivatePointsGraph = ActivateGraph;
-            this.initRandom = initRandom;
+            time = 0;
+
             currentLattice = new double[this.sizeX][];
             for (int i = 0; i < this.sizeX; i++)
                 CurrentLattice[i] = new double[this.sizeY];
-            Random rand = new Random();
-            for (int i = 0; i < this.sizeX; i++)
-                for (int j = 0; j < this.sizeY; j++)
-                    if (initRandom)
-                        currentLattice[i][j] = Math.Round(rand.NextDouble(), 2);
-                    else 
-                        currentLattice[i][j] = defval;
-            
+
+            if (initRandom)
+                FillLatticeWithRandomValues();
+            else
+                FillLatticeWithDefValues();
+
             Copy(currentLattice, ref lastLattice);
-            time = 0;
-            if (ActivatePointsGraph)
-            {
-                pastConfigs = new Hashtable();
-                pastConfigs[time] = CurrentLattice;
-            }
         }
 
-        private void DrawTimerElapsed(object sender, ElapsedEventArgs e)
+        void FillLatticeWithRandomValues()
         {
-            GetNextSteps(--stepsCount);
+            for (int i = 0; i < this.sizeX; i++)
+                for (int j = 0; j < this.sizeY; j++)
+                    currentLattice[i][j] = Math.Round(rnd.NextDouble(), 2);
         }
+
+        void FillLatticeWithDefValues()
+        {
+            for (int i = 0; i < this.sizeX; i++)
+                for (int j = 0; j < this.sizeY; j++)
+                    currentLattice[i][j] = defval;
+        }
+        #endregion
+
+        #region methods
 
         public void GetNextSteps(int count)
         {
@@ -91,7 +83,6 @@ namespace CelluarAutomation
             NextStep();
             bitMapLattice.Draw(CurrentLattice);
             Charts.AddPointsToCharts(time, currentLattice);
-            /*drawTimer.Start();*/
             for(int i = 0; i < stepsCount - 1; i++)
             {
                 NextStep();
@@ -114,23 +105,8 @@ namespace CelluarAutomation
                 }
             lastLattice = currentLattice;
             time++;
-            if (ActivatePointsGraph)
-            {
-                double[][] src = new double[sizeX][];
-                for (int i = 0; i < sizeX; i++)
-                    src[i] = new double[sizeY];
-                for (int i = 0; i < sizeX; i++)
-                    for (int j = 0; j < sizeY; j++)
-                        src[i][j] = currentLattice[i][j];
-                pastConfigs[time] = src;
-            }
         }
 
-        private void SetValue(int x, int y, double v)
-        {
-            currentLattice[x][y] = v;
-            lastLattice[x][y] = v;
-        }
         private double C(int x, int y, double point)
         {
             return Cp * (DelthaX(x, y) - point);
@@ -170,5 +146,6 @@ namespace CelluarAutomation
                 for (int j = 0; j < src[i].Length; j++)
                     res[i][j] = src[i][j];
         }
+        #endregion
     }
 }
