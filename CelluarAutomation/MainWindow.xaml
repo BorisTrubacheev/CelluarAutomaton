@@ -6,11 +6,11 @@
         xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         xmlns:local="clr-namespace:CelluarAutomation"
         mc:Ignorable="d"
-        Title="Клеточный автомат" Height="450" Width="800">
+        Title="Cellular automaton" Height="450" Width="850" MinWidth="850" MinHeight="250">
 
     <TabControl>
-        <TabItem Header="Решётка">
-            <Grid Background="AliceBlue" ShowGridLines="True" Margin="0">
+        <TabItem Header="Lattice">
+            <Grid Background="AliceBlue">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="9*"/>
                     <RowDefinition Height="Auto"/>
@@ -18,119 +18,143 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="15*"/>
+                    <ColumnDefinition Width="12*"/>
                 </Grid.ColumnDefinitions>
 
-                <Image Name ="Btm" Grid.Column="2" Grid.Row="0" Margin="2,0,0,39" Grid.RowSpan="2"/>
+                <Image Name ="Btm" Grid.Column="2" Grid.Row="0"/>
 
+                <Border Grid.Column="2" Grid.Row="1" BorderThickness="0.5px" BorderBrush="Black">
                 <WrapPanel Grid.Column="2" Grid.Row="1" Orientation="Horizontal" FlowDirection="RightToLeft">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"></RowDefinition>
                             <RowDefinition Height="*"></RowDefinition>
                         </Grid.RowDefinitions>
-                        <Button FontSize="22" Click="Button_Click" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.RowSpan="2">
+                        <Button Name="startButton" FontSize="22" Click="NextStepButtonClick" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.RowSpan="2" MinHeight="50px"
+                                MinWidth="75px">
                             <Button.Content>
-                                <TextBlock Text="Старт" TextWrapping="Wrap"></TextBlock>
+                                <TextBlock Text="Start" TextWrapping="Wrap"></TextBlock>
                             </Button.Content>
                         </Button>
                     </Grid>
 
-                    <Grid ShowGridLines="True">
+                    <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"></RowDefinition>
                             <RowDefinition Height="*"></RowDefinition>
                         </Grid.RowDefinitions>
-                        <TextBox x:Name="sizeX" MinWidth="50 px" Text="256" Grid.Row="0"/>
+                        <TextBox x:Name="sizeX" MinWidth="50 px" Text= "128" Grid.Row="0" TextAlignment="Right" FlowDirection="LeftToRight"/>
                         <TextBlock Text="SizeX" TextAlignment="Center" TextWrapping="Wrap" Grid.Row="1" Margin="0"></TextBlock>
                     </Grid>
 
-                    <Grid ShowGridLines="True">
+                    <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"></RowDefinition>
                             <RowDefinition Height="*"></RowDefinition>
                         </Grid.RowDefinitions>
-                        <TextBox x:Name="SizeY" MinWidth="50 px" Text="256" Grid.Row="0"/>
+                        <TextBox x:Name="sizeY" MinWidth="50 px" Text="256" Grid.Row="0" TextAlignment="Right" FlowDirection="LeftToRight"/>
                         <TextBlock Text="SizeY" TextAlignment="Center" TextWrapping="Wrap" Grid.Row="1" Margin="0"></TextBlock>
                     </Grid>
 
-                    <Grid ShowGridLines="True">
+                    <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"></RowDefinition>
                             <RowDefinition Height="*"></RowDefinition>
                         </Grid.RowDefinitions>
-                        <TextBox x:Name="Gn" MinWidth="50 px" Text="1000" Grid.Row="0"/>
-                        <TextBlock Text="Gn" TextAlignment="Center" TextWrapping="Wrap" Grid.Row="1" Margin="0"></TextBlock>
+                        <TextBox x:Name="Gn" MinWidth="50 px" Text="1000" Grid.Row="0" TextAlignment="Right" FlowDirection="LeftToRight"/>
+                        <TextBlock Text="r" TextAlignment="Center" TextWrapping="Wrap" Grid.Row="1" Margin="0"></TextBlock>
                     </Grid>
 
-                    <Grid ShowGridLines="True">
+                    <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"></RowDefinition>
                             <RowDefinition Height="*"></RowDefinition>
                         </Grid.RowDefinitions>
-                        <TextBox x:Name="Cp" MinWidth="50 px" Text="1" Grid.Row="0"/>
+                        <TextBox x:Name="Cp" MinWidth="50 px" Text="1" Grid.Row="0" TextAlignment="Right" FlowDirection="LeftToRight"/>
                         <TextBlock Text="Cp" TextAlignment="Center" TextWrapping="Wrap" Grid.Row="1" Margin="0"></TextBlock>
                     </Grid>
 
-                    <Grid ShowGridLines="True">
+                    <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"></RowDefinition>
                             <RowDefinition Height="*"></RowDefinition>
                         </Grid.RowDefinitions>
-                        <TextBox x:Name="defValue" MinWidth="60 px" Text="0,1" Grid.Row="0"/>
+                        <TextBox x:Name="defValue" MinWidth="60 px" Text="0,1" Grid.Row="0" TextAlignment="Right" FlowDirection="LeftToRight"/>
                         <TextBlock Text="defValue" TextAlignment="Center" TextWrapping="Wrap" Grid.Row="1" Margin="0"></TextBlock>
                     </Grid>
 
-                    <Grid ShowGridLines="True" Margin="0">
+                    <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"></RowDefinition>
                             <RowDefinition Height="*"></RowDefinition>
                         </Grid.RowDefinitions>
-                        <TextBox x:Name="maxValue" MinWidth="60 px" Text="1" Grid.Row="0"/>
+                        <TextBox x:Name="maxValue" MinWidth="60 px" Text="1" Grid.Row="0" TextAlignment="Right" FlowDirection="LeftToRight"/>
                         <TextBlock Text="maxValue" TextAlignment="Center" TextWrapping="Wrap" Grid.Row="1" Margin="0"></TextBlock>
                     </Grid>
 
-                    <Grid ShowGridLines="True" Margin="0">
+                    <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"></RowDefinition>
                             <RowDefinition Height="*"></RowDefinition>
                         </Grid.RowDefinitions>
-                        <TextBox x:Name="minValue" MinWidth="60 px" Text="0" Grid.Row="0"/>
+                        <TextBox x:Name="minValue" MinWidth="60 px" Text="0" Grid.Row="0" TextAlignment="Right" FlowDirection="LeftToRight"/>
                         <TextBlock Text="minValue" TextAlignment="Center" TextWrapping="Wrap" Grid.Row="1" Margin="0"></TextBlock>
                     </Grid>
 
-                    <Grid ShowGridLines="True" Margin="0">
+                    <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"></RowDefinition>
                             <RowDefinition Height="*"></RowDefinition>
                         </Grid.RowDefinitions>
-                        <TextBox x:Name="stepSize" MinWidth="60 px" Text="1" Grid.Row="0"/>
+                        <TextBox x:Name="stepSize" MinWidth="60 px" Text="1" Grid.Row="0" TextAlignment="Right" FlowDirection="LeftToRight"/>
                         <TextBlock Text="StepSize" TextAlignment="Center" TextWrapping="Wrap" Grid.Row="1" Margin="0"></TextBlock>
                     </Grid>
-                </WrapPanel>
-
-                <StackPanel Orientation="Vertical" Grid.ColumnSpan="2">
-                    <TextBlock Text="Отслеживаемые точки" TextWrapping="Wrap" TextAlignment="Center"></TextBlock>
                     <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"></ColumnDefinition>
-                            <ColumnDefinition Width="*"></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-                        <TextBox x:Name="monitoredPointX" Text=""  Grid.Column="0"></TextBox>
-                        <TextBox x:Name="monitoredPointY" Text="" Grid.Column="1"></TextBox>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <CheckBox x:Name="useRandomMode" HorizontalAlignment="Center" IsChecked="True" FlowDirection="LeftToRight"></CheckBox>
+                        <TextBlock Text="Use random values for cells" TextAlignment="Center" TextWrapping="Wrap" Grid.Row="1" Margin="0"
+                                       MaxWidth="90px"></TextBlock>
                     </Grid>
-                    <Button x:Name="addPoint" Grid.ColumnSpan="2" Margin="0 7 0 0" Click="AddPointCoordinateToMonitoring">
-                        <Button.Content>
-                            <TextBlock x:Name="click" Text="Отслеживать значение точки на графике" TextWrapping="Wrap" TextAlignment="Center"></TextBlock>
-                        </Button.Content>
+                </WrapPanel>
+                </Border>
+
+                <Border Width="Auto" BorderThickness="0.5px" BorderBrush="Black" Grid.ColumnSpan="2">
+                    <StackPanel x:Name="monitoredPoints" Orientation="Vertical" Grid.ColumnSpan="2">
+                        <Grid ShowGridLines="True">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="monitoredPointX" Text=""  Grid.Column="0"></TextBox>
+                            <TextBox x:Name="monitoredPointY" Text="" Grid.Column="1"></TextBox>
+                        </Grid>
+                        <Button x:Name="addPoint" Grid.ColumnSpan="2" Margin="0 7 0 0" Click="AddPointToChartButtonClick">
+                            <Button.Content>
+                                <TextBlock x:Name="click" Text="Track the value of a point on a chart" TextWrapping="Wrap" TextAlignment="Center"></TextBlock>
+                            </Button.Content>
+                        </Button>
+                        <TextBlock Text="Tracked points" TextWrapping="Wrap" TextAlignment="Center"></TextBlock>
+                    </StackPanel>
+                </Border>
+
+                <Grid Grid.ColumnSpan="2" Grid.Row="0" VerticalAlignment="Bottom">
+                    <TextBlock x:Name="currentStepTextBlock"></TextBlock>
+                </Grid>
+
+                <Grid Grid.ColumnSpan="2" Grid.Row="1">
+                    <Button Click="RebootButtonClick">
+                        <TextBlock Text="Restart" TextWrapping="Wrap" TextAlignment="Center"></TextBlock>
                     </Button>
-                </StackPanel>
+                </Grid>
             </Grid>
         </TabItem>
 
-        <TabItem Header="Графики">
+        <TabItem Header="Charts">
             <Grid>
-                <StackPanel x:Name="GraphicsStackPanel">
+                <StackPanel x:Name="ChartsStackPanel">
                 </StackPanel>
             </Grid>
         </TabItem>
