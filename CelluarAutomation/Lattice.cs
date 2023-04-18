@@ -15,6 +15,8 @@ namespace CelluarAutomation
         private SmartBitmap bitMapLattice;
         private int stepsCount;
 
+        private LatticeHashTable previousLattices;
+
         private int sizeX;
         private int sizeY;
 
@@ -25,6 +27,9 @@ namespace CelluarAutomation
         private double[][] lastLattice;
 
         private int time;
+        private int collisionTime;
+
+        private bool haveCollision;
 
         private Random rnd = new Random();
         #endregion
@@ -41,12 +46,16 @@ namespace CelluarAutomation
         {
             bitMapLattice = new SmartBitmap(img, sizeX, sizeY, MaxVal, MinVal, CurrentLattice);
 
+            previousLattices = new LatticeHashTable();
+
             this.sizeX = sizeX;
             this.sizeY = sizeY;
             this.r = r;
             this.Cp = Cp;
             defval = defaultvalue;
             time = 0;
+            collisionTime = 0;
+            haveCollision = false;
 
             currentLattice = new double[this.sizeX][];
             for (int i = 0; i < this.sizeX; i++)
@@ -77,24 +86,36 @@ namespace CelluarAutomation
 
         #region methods
 
-        public void GetNextSteps(int count)
+        public (bool, int) GetNextSteps(int count)
         {
             stepsCount = count;
             NextStep();
             bitMapLattice.Draw(CurrentLattice);
             Charts.AddPointsToCharts(time, currentLattice);
+            if (!previousLattices.TryAddValueToTable(bitMapLattice.LatticeBitmap, currentLattice))
+            {
+                collisionTime = haveCollision ? collisionTime : time;
+                haveCollision = true;
+            }
             for(int i = 0; i < stepsCount - 1; i++)
             {
                 NextStep();
                 bitMapLattice.Draw(CurrentLattice);
                 Charts.AddPointsToCharts(time, currentLattice);
+                if (!previousLattices.TryAddValueToTable(bitMapLattice.LatticeBitmap, currentLattice))
+                {
+                    collisionTime = haveCollision ? collisionTime : time;
+                    haveCollision = true;
+                }
             }
+            return (haveCollision, collisionTime);
         }
 
 
         private void NextStep()
         {
             for (int i = 0; i < sizeX; i++)
+            {
                 for (int j = 0; j < sizeY; j++)
                 {
                     double value = F(lastLattice[i][j]) + C(i, j, lastLattice[i][j]);
@@ -103,7 +124,8 @@ namespace CelluarAutomation
 
                     CurrentLattice[i][j] = value;
                 }
-            lastLattice = currentLattice;
+            }
+            Copy(currentLattice, ref lastLattice);
             time++;
         }
 

@@ -52,7 +52,12 @@ namespace CelluarAutomation
             }
             else
             {
-                map.GetNextSteps(Int32.Parse(stepSize.Text));
+                (bool haveCollision, int step) = map.GetNextSteps(Int32.Parse(stepSize.Text));
+
+                if (haveCollision)
+                {
+                    collisionTextBlock.Text = $"Lattice have collision from {step} step";
+                }
                 currentStepTextBlock.Text = "Current step: " + map.Time.ToString();
             }
         }

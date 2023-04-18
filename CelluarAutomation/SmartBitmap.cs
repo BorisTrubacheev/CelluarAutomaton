@@ -12,29 +12,31 @@ namespace CelluarAutomation
 {
     class SmartBitmap
     {
-        private Bitmap lattice;
+        private Bitmap latticeBitmap;
         private WindowImage image;
         private double maxValInCell;
         private double minValInCell;
 
+        public Bitmap LatticeBitmap => latticeBitmap;
+
         public SmartBitmap(WindowImage img, int sizeX, int sizeY, double max, double min, double[][] latticeArray)
         {
-            lattice = new Bitmap(sizeX, sizeY);
+            latticeBitmap = new Bitmap(sizeX, sizeY);
             image = img;
-            image.Source = BitmapToImageSource(lattice);
+            image.Source = BitmapToImageSource(latticeBitmap);
             maxValInCell = max;
             minValInCell = min;
         }
 
         public void Draw(double[][] lattticeArray)
         {
-            for (int i = 0; i < lattice.Width; i++)
-                for (int j = 0; j < lattice.Height; j++)
+            for (int i = 0; i < latticeBitmap.Width; i++)
+                for (int j = 0; j < latticeBitmap.Height; j++)
                 {
                     Color c = GetCellColor(lattticeArray[i][j]);
-                    lattice.SetPixel(i, j, c);
+                    latticeBitmap.SetPixel(i, j, c);
                 }
-            image.Source = BitmapToImageSource(lattice);
+            image.Source = BitmapToImageSource(latticeBitmap);
         }
 
         private Color GetCellColor(double value)
