@@ -27,9 +27,10 @@ namespace CelluarAutomation
         private double[][] lastLattice;
 
         private int time;
-        private int collisionTime;
+        private int firstCollisionTime;
 
         private bool haveCollision;
+        private int periodSize;
 
         private Random rnd = new Random();
         #endregion
@@ -54,8 +55,9 @@ namespace CelluarAutomation
             this.Cp = Cp;
             defval = defaultvalue;
             time = 0;
-            collisionTime = 0;
+            firstCollisionTime = 0;
             haveCollision = false;
+            periodSize = 0;
 
             currentLattice = new double[this.sizeX][];
             for (int i = 0; i < this.sizeX; i++)
@@ -86,29 +88,34 @@ namespace CelluarAutomation
 
         #region methods
 
-        public (bool, int) GetNextSteps(int count)
+        public (bool, int, int) GetNextSteps(int count)
         {
             stepsCount = count;
-            NextStep();
+            /*NextStep();
             bitMapLattice.Draw(CurrentLattice);
             Charts.AddPointsToCharts(time, currentLattice);
-            if (!previousLattices.TryAddValueToTable(bitMapLattice.LatticeBitmap, currentLattice))
+            int period = previousLattices.TryAddValueToTable(bitMapLattice.LatticeBitmap, currentLattice, time);
+            if(period != 0)
             {
-                collisionTime = haveCollision ? collisionTime : time;
+                firstCollisionTime = haveCollision ? firstCollisionTime : time;
+                periodSize = haveCollision ? periodSize : period;
                 haveCollision = true;
-            }
-            for(int i = 0; i < stepsCount - 1; i++)
+            }*/
+            int period = 0;
+            for(int i = 0; i < stepsCount; i++)
             {
                 NextStep();
                 bitMapLattice.Draw(CurrentLattice);
                 Charts.AddPointsToCharts(time, currentLattice);
-                if (!previousLattices.TryAddValueToTable(bitMapLattice.LatticeBitmap, currentLattice))
+                period = previousLattices.TryAddValueToTable(bitMapLattice.LatticeBitmap, currentLattice, time);
+                if (period != 0)
                 {
-                    collisionTime = haveCollision ? collisionTime : time;
+                    firstCollisionTime = haveCollision ? firstCollisionTime : time;
+                    periodSize = haveCollision ? periodSize : period;
                     haveCollision = true;
                 }
             }
-            return (haveCollision, collisionTime);
+            return (haveCollision, firstCollisionTime, periodSize);
         }
 
 
@@ -167,6 +174,38 @@ namespace CelluarAutomation
             for (int i = 0; i < src.Length; i++)
                 for (int j = 0; j < src[i].Length; j++)
                     res[i][j] = src[i][j];
+        }
+
+        public string GetLatticeInfo()
+        {
+            int maxValuePointsCount = GetMaxValuePointsCount();
+            int minValuePointsCount = GetMinValuePointsCount();
+
+            string info = $"Count of max values in lattice: {maxValuePointsCount}\n" +
+                $"Count of min values in lattice: {minValuePointsCount}\n " +
+                $"Collisions count: {previousLattices.CollisionCount}";
+
+            return info;
+        }
+
+        private int GetMaxValuePointsCount()
+        {
+            int result = 0;
+            foreach (double[] str in currentLattice)
+            {
+                result += str.Count((x) => x == 1);
+            }
+            return result;
+        }
+
+        private int GetMinValuePointsCount()
+        {
+            int result = 0;
+            foreach (double[] str in currentLattice)
+            {
+                result += str.Count((x) => x == 0);
+            }
+            return result;
         }
         #endregion
     }

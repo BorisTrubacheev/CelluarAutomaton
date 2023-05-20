@@ -9,27 +9,35 @@ namespace CelluarAutomation
 {
     class LatticeHashTable
     {
-        private Dictionary<Int64, double[][]> table;
+        private Dictionary<Int64, (int, double[][])> table;
+        private int collisionCount;
 
         public LatticeHashTable()
         {
-            table = new Dictionary<Int64, double[][]>();
+            table = new Dictionary<Int64, (int, double[][])>();
+            collisionCount = 0;
         }
 
-        public bool TryAddValueToTable(Bitmap btm, double[][] arr)
+        public int CollisionCount => collisionCount;
+
+        public int TryAddValueToTable(Bitmap btm, double[][] arr, int step)
         {
             Int64 hash = GetHash(btm);
-            if (table.ContainsKey(hash) && table.ContainsValue(arr))
+            if (table.ContainsKey(hash) && Enumerable.SequenceEqual(table[hash].Item2, arr))
             {
-                return false;
+                return step - table[hash].Item1;
             }
-            AddValue(hash, arr);
-            return true;
+            else if(table.ContainsKey(hash) && !Enumerable.SequenceEqual(table[hash].Item2, arr))
+            {
+                collisionCount++;
+            }
+            AddValue(hash, arr, step);
+            return 0;
         }
 
-        private void AddValue(Int64 hash, double[][] arr)
+        private void AddValue(Int64 hash, double[][] arr, int step)
         {
-            table.Add(hash, arr);
+            table.Add(hash, (step, arr));
         }
 
         private Int64 GetHash(Bitmap btm)

@@ -141,8 +141,11 @@
                 </Border>
 
                 <StackPanel Grid.ColumnSpan="2" Grid.Row="0" VerticalAlignment="Bottom">
-                    <TextBlock x:Name="collisionTextBlock"  TextWrapping="Wrap" FontSize="15" Foreground="Red"></TextBlock>
+                    <TextBlock x:Name="collisionTextBlock"  TextWrapping="Wrap" Foreground="Red"></TextBlock>
                     <TextBlock x:Name="currentStepTextBlock"></TextBlock>
+                    <Button Click="InfoButtonClick">
+                        <TextBlock Text="Info" TextWrapping="Wrap" TextAlignment="Center"></TextBlock>
+                    </Button>
                 </StackPanel>
 
                 <Grid Grid.ColumnSpan="2" Grid.Row="1">
