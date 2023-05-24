@@ -45,7 +45,7 @@ namespace CelluarAutomation
             Int64 hash = Int64.MinValue;
             for(int x = 1; x < btm.Size.Width; x++)
             {
-                for (int y = 1; y < btm.Size.Width; y++)
+                for (int y = 1; y < btm.Size.Height; y++)
                 {
                     try
                     {

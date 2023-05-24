@@ -180,9 +180,13 @@ namespace CelluarAutomation
         {
             int maxValuePointsCount = GetMaxValuePointsCount();
             int minValuePointsCount = GetMinValuePointsCount();
+            double summ = Math.Round(GetLatticeSumm(), 3);
+            double average = Math.Round(summ / (sizeX * sizeY), 3);
 
             string info = $"Count of max values in lattice: {maxValuePointsCount}\n" +
-                $"Count of min values in lattice: {minValuePointsCount}\n " +
+                $"Count of min values in lattice: {minValuePointsCount}\n" +
+                $"Lattice amount: {summ}\n" +
+                $"Average value in cells: {average}\n" +
                 $"Collisions count: {previousLattices.CollisionCount}";
 
             return info;
@@ -204,6 +208,16 @@ namespace CelluarAutomation
             foreach (double[] str in currentLattice)
             {
                 result += str.Count((x) => x == 0);
+            }
+            return result;
+        }
+
+        private double GetLatticeSumm()
+        {
+            double result = 0;
+            foreach (double[] str in currentLattice)
+            {
+                result += str.Sum();
             }
             return result;
         }

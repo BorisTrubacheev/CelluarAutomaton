@@ -56,7 +56,7 @@ namespace CelluarAutomation
 
                 if (haveCollision)
                 {
-                    collisionTextBlock.Text = $"Lattice have collision from {step} step with period {period}";
+                    collisionTextBlock.Text = $"Lattice have cycle from {step} step with period {period}";
                 }
                 currentStepTextBlock.Text = "Current step: " + lattice.Time.ToString();
             }
@@ -85,7 +85,6 @@ namespace CelluarAutomation
 
         private void RebootButtonClick(object sender, RoutedEventArgs e)
         {
-            InitializeTextBoxes();
             isStarted = false;
             startButton.Content = "Start";
             currentStepTextBlock.Text = "Current step: 0";
