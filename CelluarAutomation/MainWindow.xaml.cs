@@ -27,7 +27,7 @@ namespace CelluarAutomation
     /// </summary>
     public partial class MainWindow : Window
     {
-        private Lattice map;
+        private Lattice lattice;
         private bool isStarted;
         private bool isCoponentsInitiazed;
 
@@ -52,17 +52,43 @@ namespace CelluarAutomation
             }
             else
             {
-                map.GetNextSteps(Int32.Parse(stepSize.Text));
-                currentStepTextBlock.Text = "Current step: " + map.Time.ToString();
+                (bool haveCollision, int step, int period) = lattice.GetNextSteps(Int32.Parse(stepSize.Text));
+
+                if (haveCollision)
+                {
+                    collisionTextBlock.Text = $"Lattice have cycle from {step} step with period {period}";
+                }
+                currentStepTextBlock.Text = "Current step: " + lattice.Time.ToString();
+            }
+        }
+
+        private void InfoButtonClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string info = lattice.GetLatticeInfo();
+                Popup pop = new Popup();
+                TextBlock textBlock = new TextBlock();
+                textBlock.Background = Brushes.AntiqueWhite;
+                textBlock.Text = info;
+                textBlock.FontSize = 15;
+                pop.Child = textBlock;
+                pop.Placement = PlacementMode.Mouse;
+                pop.StaysOpen = false;
+                pop.IsOpen = true;
+            }
+            catch
+            {
+                return;
             }
         }
 
         private void RebootButtonClick(object sender, RoutedEventArgs e)
         {
-            InitializeTextBoxes();
             isStarted = false;
             startButton.Content = "Start";
             currentStepTextBlock.Text = "Current step: 0";
+            collisionTextBlock.Text = "";
             Charts.ClearChartsByRebootButton();
             ChartsStackPanel.Children.Clear();
             ClearMonitoredPointsStackPanel();
@@ -82,10 +108,10 @@ namespace CelluarAutomation
         {
             try
             {
-                map = new Lattice(Btm, Int32.Parse(sizeX.Text), Int32.Parse(sizeY.Text), double.Parse(Gn.Text),
+                lattice = new Lattice(Btm, Int32.Parse(sizeX.Text), Int32.Parse(sizeY.Text), double.Parse(Gn.Text),
                     double.Parse(Cp.Text), double.Parse(defValue.Text), double.Parse(maxValue.Text), double.Parse(minValue.Text), useRandomMode.IsChecked.Value,
                     Int32.Parse(stepSize.Text));
-                map.BitMapLattice.Draw(map.CurrentLattice);
+                lattice.BitMapLattice.Draw(lattice.CurrentLattice);
             }
             catch
             {

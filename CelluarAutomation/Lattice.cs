@@ -15,6 +15,8 @@ namespace CelluarAutomation
         private SmartBitmap bitMapLattice;
         private int stepsCount;
 
+        private LatticeHashTable previousLattices;
+
         private int sizeX;
         private int sizeY;
 
@@ -25,6 +27,10 @@ namespace CelluarAutomation
         private double[][] lastLattice;
 
         private int time;
+        private int firstCollisionTime;
+
+        private bool haveCollision;
+        private int periodSize;
 
         private Random rnd = new Random();
         #endregion
@@ -41,12 +47,17 @@ namespace CelluarAutomation
         {
             bitMapLattice = new SmartBitmap(img, sizeX, sizeY, MaxVal, MinVal, CurrentLattice);
 
+            previousLattices = new LatticeHashTable();
+
             this.sizeX = sizeX;
             this.sizeY = sizeY;
             this.r = r;
             this.Cp = Cp;
             defval = defaultvalue;
             time = 0;
+            firstCollisionTime = 0;
+            haveCollision = false;
+            periodSize = 0;
 
             currentLattice = new double[this.sizeX][];
             for (int i = 0; i < this.sizeX; i++)
@@ -77,24 +88,41 @@ namespace CelluarAutomation
 
         #region methods
 
-        public void GetNextSteps(int count)
+        public (bool, int, int) GetNextSteps(int count)
         {
             stepsCount = count;
-            NextStep();
+            /*NextStep();
             bitMapLattice.Draw(CurrentLattice);
             Charts.AddPointsToCharts(time, currentLattice);
-            for(int i = 0; i < stepsCount - 1; i++)
+            int period = previousLattices.TryAddValueToTable(bitMapLattice.LatticeBitmap, currentLattice, time);
+            if(period != 0)
+            {
+                firstCollisionTime = haveCollision ? firstCollisionTime : time;
+                periodSize = haveCollision ? periodSize : period;
+                haveCollision = true;
+            }*/
+            int period = 0;
+            for(int i = 0; i < stepsCount; i++)
             {
                 NextStep();
                 bitMapLattice.Draw(CurrentLattice);
                 Charts.AddPointsToCharts(time, currentLattice);
+                period = previousLattices.TryAddValueToTable(bitMapLattice.LatticeBitmap, currentLattice, time);
+                if (period != 0)
+                {
+                    firstCollisionTime = haveCollision ? firstCollisionTime : time;
+                    periodSize = haveCollision ? periodSize : period;
+                    haveCollision = true;
+                }
             }
+            return (haveCollision, firstCollisionTime, periodSize);
         }
 
 
         private void NextStep()
         {
             for (int i = 0; i < sizeX; i++)
+            {
                 for (int j = 0; j < sizeY; j++)
                 {
                     double value = F(lastLattice[i][j]) + C(i, j, lastLattice[i][j]);
@@ -103,7 +131,8 @@ namespace CelluarAutomation
 
                     CurrentLattice[i][j] = value;
                 }
-            lastLattice = currentLattice;
+            }
+            Copy(currentLattice, ref lastLattice);
             time++;
         }
 
@@ -145,6 +174,52 @@ namespace CelluarAutomation
             for (int i = 0; i < src.Length; i++)
                 for (int j = 0; j < src[i].Length; j++)
                     res[i][j] = src[i][j];
+        }
+
+        public string GetLatticeInfo()
+        {
+            int maxValuePointsCount = GetMaxValuePointsCount();
+            int minValuePointsCount = GetMinValuePointsCount();
+            double summ = Math.Round(GetLatticeSumm(), 3);
+            double average = Math.Round(summ / (sizeX * sizeY), 3);
+
+            string info = $"Count of max values in lattice: {maxValuePointsCount}\n" +
+                $"Count of min values in lattice: {minValuePointsCount}\n" +
+                $"Lattice amount: {summ}\n" +
+                $"Average value in cells: {average}\n" +
+                $"Collisions count: {previousLattices.CollisionCount}";
+
+            return info;
+        }
+
+        private int GetMaxValuePointsCount()
+        {
+            int result = 0;
+            foreach (double[] str in currentLattice)
+            {
+                result += str.Count((x) => x == 1);
+            }
+            return result;
+        }
+
+        private int GetMinValuePointsCount()
+        {
+            int result = 0;
+            foreach (double[] str in currentLattice)
+            {
+                result += str.Count((x) => x == 0);
+            }
+            return result;
+        }
+
+        private double GetLatticeSumm()
+        {
+            double result = 0;
+            foreach (double[] str in currentLattice)
+            {
+                result += str.Sum();
+            }
+            return result;
         }
         #endregion
     }
